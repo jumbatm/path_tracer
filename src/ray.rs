@@ -1,4 +1,5 @@
 use crate::vec3;
+use crate::colour;
 
 pub struct Ray {
     origin: vec3::Vec3<f64>,    // A point.
@@ -17,43 +18,19 @@ impl Ray {
     }
 }
 
-pub struct Colour(vec3::Vec3<u8>);
-impl Colour {
-    pub fn new(r: u8, g: u8, b: u8) -> Colour {
-        Colour(vec3::Vec3::new(r, g, b))
-    }
-    pub fn get_red(&self) -> u8 {
-        (self.0).0
-    }
-    pub fn get_green(&self) -> u8 {
-        (self.0).1
-    }
-    pub fn get_blue(&self) -> u8 {
-        (self.0).2
-    }
-    pub fn mut_red(&mut self) -> &mut u8 {
-        &mut (self.0).0
-    }
-    pub fn mut_green(&mut self) -> &mut u8 {
-        &mut (self.0).1
-    }
-    pub fn mut_blue(&mut self) -> &mut u8 {
-        &mut (self.0).2
-    }
-}
 
-pub struct ColouredRay(Colour, Ray);
+pub struct ColouredRay(colour::Colour, Ray);
 impl ColouredRay {
-    pub fn new(colour: Colour, ray: Ray) -> ColouredRay {
+    pub fn new(colour: colour::Colour, ray: Ray) -> ColouredRay {
         ColouredRay(colour, ray)
     }
-    pub fn get_colour(&self) -> &Colour {
+    pub fn get_colour(&self) -> &colour::Colour {
         &self.0
     }
     pub fn get_ray(&self) -> &Ray {
         &self.1
     }
-    pub fn mut_colour(&mut self) -> &mut Colour {
+    pub fn mut_colour(&mut self) -> &mut colour::Colour {
         &mut self.0
     }
     pub fn mut_ray(&mut self) -> &mut Ray {

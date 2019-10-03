@@ -15,6 +15,31 @@ impl<T> Vec3<T> {
     }
 }
 
+impl<T> Vec3<T>
+where
+    T: Copy + std::ops::Mul<Output = f64> + std::ops::Add<Output = f64>,
+{
+    pub fn length(&self) -> f64 {
+        (self.0 * self.0 + self.1 * self.1 + self.2 * self.2).sqrt()
+    }
+}
+
+impl<T> Vec3<T>
+where
+    T: Copy
+        + std::ops::Mul<Output = f64>
+        + std::ops::Add<Output = f64>
+        + std::ops::Div<Output = f64>
+        + std::ops::Div<f64, Output = T>,
+{
+    pub fn normalised(self) -> Vec3<T> {
+        Vec3(
+            self.0 / self.length(),
+            self.1 / self.length(),
+            self.2 / self.length(),
+        )
+    }
+}
 impl<T: std::ops::Mul<Output = T> + std::ops::Add<Output = T>> Vec3<T> {
     pub fn dot(self, rhs: Self) -> T {
         self.0 * rhs.0 + self.1 * rhs.1 + self.2 * rhs.2

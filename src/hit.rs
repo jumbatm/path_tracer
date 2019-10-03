@@ -1,5 +1,6 @@
 use crate::ray;
 use crate::vec3;
+use crate::colour;
 
 /// Defines a type which can be hit with a ray. The returned ray is colour-attenuated and reflected
 /// in the right direction.
@@ -38,7 +39,7 @@ impl Hit for Sphere {
             let intersection_point = *from.get_ray().get_direction() * t + *from.get_ray().get_origin();
             
             // For now, just send back a test colour.
-            Some(ray::ColouredRay::new(ray::Colour::new(255, 0, 0),ray::Ray::new(intersection_point, vec3::Vec3::new(1.0, 0.0, 0.0))))
+            Some(ray::ColouredRay::new(colour::Colour::new(1.0, 0.0, 0.0),ray::Ray::new(intersection_point, vec3::Vec3::new(1.0, 0.0, 0.0))))
         }
     }
 }
