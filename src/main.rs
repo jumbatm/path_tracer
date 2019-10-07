@@ -1,13 +1,14 @@
-use path_tracer::image::Image;
+use path_tracer::camera;
+use path_tracer::hit;
 use path_tracer::vec3;
 
 fn main() {
-    let mut im = Image::new(800, 600);
-
-    for y in 0..im.y_len() {
-        for x in 0..im.x_len() {
-            im[(x, y)] = vec3::Vec3::new((x as f32 / im.x_len() as f32 * 255.0) as u8, (y as f32 / im.y_len() as f32 * 255.0) as u8, (0.2 * 255.0) as u8);
-        }
-    }
+    let camera = camera::Camera::new(
+        /*scene=*/hit::Sphere::new(vec3::Vec3::new(1.0, 0.0, 0.0), 0.5),
+        /*origin=*/vec3::Vec3::new(0.0, 0.0, 0.0),
+        /*up=*/vec3::Vec3::new(0.0, 1.0, 0.0),
+        /*forward=*/vec3::Vec3::new(1.0, 0.0, 0.0),
+    );
+    let im = camera.render(800, 600, 90.0, 1, 1);
     println!("{}", im.to_ppm());
 }

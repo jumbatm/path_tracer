@@ -1,6 +1,7 @@
 use crate::vec3;
 use crate::colour;
 
+#[derive(Debug)]
 pub struct Ray {
     origin: vec3::Vec3<f64>,    // A point.
     direction: vec3::Vec3<f64>, // A unit vector pointing in the ray's direction.
@@ -18,7 +19,7 @@ impl Ray {
     }
 }
 
-
+#[derive(Debug)]
 pub struct ColouredRay(colour::Colour, Ray);
 impl ColouredRay {
     pub fn new(colour: colour::Colour, ray: Ray) -> ColouredRay {

@@ -1,5 +1,6 @@
 use crate::vec3;
 
+#[derive(Debug)]
 pub struct Colour(vec3::Vec3<f64>);
 impl Colour {
     pub fn new(r: f64, g: f64, b: f64) -> Colour {

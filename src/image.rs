@@ -2,6 +2,9 @@ pub use crate::vec3;
 
 type ImageDataType = u8;
 
+// TODO: Provide an Iterator implementation which traverses the image in row major. Should be as
+// easy as just exposing the underyling vec's.
+
 pub struct Image {
     data: Vec<vec3::Vec3<ImageDataType>>,
     x_size: usize,
