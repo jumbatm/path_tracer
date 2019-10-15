@@ -59,12 +59,11 @@ impl Hit for Sphere {
             let intersection_point =
                 *from.get_ray().get_direction() * t + *from.get_ray().get_origin();
 
-            // For now, just send back a colour representing the normal.
             let normal = (intersection_point - self.origin).normalised();
             Some(ray::ColouredRay::new(
-                colour::Colour::new(0.5 * (normal.0 + 1.0), 0.5 * (normal.1 + 1.0), 0.5 * (normal.2 + 1.0)),
-                ray::Ray::new(intersection_point, normal),
-            ))
+                colour::Colour::new(0.5 * from.get_colour().get_red(), 0.5 * from.get_colour().get_green(), 0.5 * from.get_colour().get_blue()),
+                Sphere::random_unit_vector_in_sphere(intersection_point + normal))
+            )
         }
     }
 }

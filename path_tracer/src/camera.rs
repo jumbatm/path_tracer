@@ -4,8 +4,8 @@ use crate::image;
 use crate::ray;
 use crate::vec3;
 
-use rand::SeedableRng;
 use rand::distributions::{Distribution, Uniform};
+use rand::SeedableRng;
 
 pub struct Camera<T: Hit> {
     scene: T,
@@ -70,28 +70,33 @@ impl<T: Hit> Camera<T> {
                 for j in 0..y_size {
                     // Have a mutable coloured ray. Start it on the projection plane in the
                     // appropiate place.
-                    let mut current_ray = ray::ColouredRay::new(
-                        colour::Colour::new(0.0, 0.0, 0.0),
-                        ray::Ray::new(
-                            /*origin=*/
-                            top_left + self.right * delta_i * (i as f64)
-                                - self.up * delta_i * (j as f64)
-                                // Anti-aliasing:
-                                + self.up * 
-                                    if samples_per_pixel > 0 { 
-                                            jitter_between.sample(&mut rng) * projection_plane_pixel_height 
-                                    } else { 
-                                        0.0 
+                    let ray = ray::Ray::new(
+                        /*origin=*/
+                        top_left + self.right * delta_i * (i as f64)
+                            - self.up * delta_i * (j as f64)
+                            + self.up // Antialiasing.
+                                    * if samples_per_pixel > 0 {
+                                        jitter_between.sample(&mut rng)
+                                            * projection_plane_pixel_height
+                                    } else {
+                                        0.0
                                     }
-                                + self.right * 
-                                    if samples_per_pixel > 0 { 
-                                        jitter_between.sample(&mut rng) * projection_plane_pixel_width 
-                                    } else { 
-                                        0.0 
-                                    },
-                            /*direction=*/ self.forward,
-                        ),
+                            + self.right
+                                * if samples_per_pixel > 0 {
+                                    jitter_between.sample(&mut rng) * projection_plane_pixel_width
+                                } else {
+                                    0.0
+                                },
+                        /*direction=*/ self.forward,
                     );
+
+                    // Get a pretty, sky-blue gradient.
+                    let t = (ray.get_origin().normalised().1 + 1.0) * 0.5;
+                    let colour = vec3::Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + vec3::Vec3::new(0.5, 0.7, 1.0) * t;
+                    let colour = colour::Colour::new(colour.0, colour.1, colour.2);
+
+                    let mut current_ray =
+                        ray::ColouredRay::new(colour, ray);
                     for _ in 0..bounces {
                         // Find intersection. Have the Hit bounce it to a new direction and origin.
                         current_ray = match self.scene.hit(&current_ray) {
