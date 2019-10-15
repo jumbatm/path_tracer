@@ -78,10 +78,18 @@ impl<T: Hit> Camera<T> {
                             top_left + self.right * delta_i * (i as f64)
                                 - self.up * delta_i * (j as f64)
                                 // Anti-aliasing:
-                                + self.up
-                                    * jitter_between.sample(&mut rng)
-                                    * projection_plane_pixel_height
-                                + self.right * jitter_between.sample(&mut rng) * projection_plane_pixel_width,
+                                + self.up * 
+                                    if samples_per_pixel > 0 { 
+                                            jitter_between.sample(&mut rng) * projection_plane_pixel_height 
+                                    } else { 
+                                        0.0 
+                                    }
+                                + self.right * 
+                                    if samples_per_pixel > 0 { 
+                                        jitter_between.sample(&mut rng) * projection_plane_pixel_width 
+                                    } else { 
+                                        0.0 
+                                    },
                             /*direction=*/ self.forward,
                         ),
                     );
