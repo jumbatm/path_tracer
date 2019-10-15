@@ -5,7 +5,6 @@ use crate::ray;
 use crate::vec3;
 
 use rand::SeedableRng;
-
 use rand::distributions::{Distribution, Uniform};
 
 pub struct Camera<T: Hit> {

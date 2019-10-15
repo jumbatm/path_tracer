@@ -11,6 +11,16 @@ impl Ray {
     pub fn new(origin: vec3::Vec3<f64>, direction: vec3::Vec3<f64>) -> Ray {
         Ray { origin, direction }
     }
+
+    pub fn from_spherical(origin: vec3::Vec3<f64>, radius: f64, inclination: f64, azimuth: f64) -> Ray {
+        let direction = vec3::Vec3(
+            radius * inclination.sin() * azimuth.cos(),
+            radius * inclination.sin() * azimuth.sin(),
+            radius * azimuth.cos()
+        );
+
+        Ray::new(origin, direction)
+    }
     pub fn get_origin(&self) -> &vec3::Vec3<f64> {
         &self.origin
     }

@@ -20,8 +20,14 @@ impl Sphere {
             radius
         }
     }
-    fn random_unit_vector_in_hemisphere() {
-        // TODO
+    /// Produces a ray starting at some origin, pointing to some uniformly-distributed vector along
+    /// a unit sphere.
+    fn random_unit_vector_in_sphere(origin: vec3::Vec3<f64>) -> ray::Ray {
+        use rand::distributions::{Distribution, Uniform};
+        use rand::SeedableRng;
+        let mut rng = rand::rngs::SmallRng::from_rng(rand::thread_rng()).unwrap();
+        let between = Uniform::from(0.0..=2.0 * std::f64::consts::PI);
+        ray::Ray::from_spherical(origin, 1.0, between.sample(&mut rng), between.sample(&mut rng))
     }
 }
 
