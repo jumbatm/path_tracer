@@ -62,7 +62,7 @@ impl Hit for Sphere {
             let normal = (intersection_point - self.origin).normalised();
             Some(ray::ColouredRay::new(
                 colour::Colour::new(0.5 * from.get_colour().get_red(), 0.5 * from.get_colour().get_green(), 0.5 * from.get_colour().get_blue()),
-                Sphere::random_unit_vector_in_sphere(intersection_point + normal))
+                Sphere::random_unit_vector_in_sphere(intersection_point + normal * 2.0))
             )
         }
     }
