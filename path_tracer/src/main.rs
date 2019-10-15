@@ -9,6 +9,6 @@ fn main() {
         /*up=*/vec3::Vec3::new(0.0, 1.0, 0.0),
         /*forward=*/vec3::Vec3::new(1.0, 0.0, 0.0),
     );
-    let im = camera.render(800, 600, 90.0, 1, 1);
+    let im = camera.render(800, 600, 90.0, 1, 100);
     println!("{}", im.to_ppm());
 }

@@ -4,6 +4,10 @@ use crate::image;
 use crate::ray;
 use crate::vec3;
 
+use rand::SeedableRng;
+
+use rand::distributions::{Distribution, Uniform};
+
 pub struct Camera<T: Hit> {
     scene: T,
     origin: vec3::Vec3<f64>,
@@ -40,7 +44,8 @@ impl<T: Hit> Camera<T> {
         // We define the projection plane to be at distance of 1. Therefore:
         let alpha = (fov / 180.0) * std::f64::consts::PI;
         let projection_plane_half_width = dbg!((dbg!(alpha / 2.0)).tan());
-        dbg!(self.origin);
+        let projection_plane_pixel_width =
+            (2.0 * (projection_plane_half_width as f64)) / (x_size as f64);
 
         // When we refer to the fov, we're referring to the horizontal fov. Therefore:
         let delta_i = (projection_plane_half_width * 2.0) / (x_size as f64);
@@ -48,11 +53,17 @@ impl<T: Hit> Camera<T> {
         // We crop the top and bottom image rather than warping the entire image. Therefore, we
         // use the same delta as for the vertical case.
         let projection_plane_half_height = delta_i * (y_size as f64 / 2.0);
+        let projection_plane_pixel_height =
+            (2.0 * (projection_plane_half_height as f64)) / (y_size as f64);
 
         let top_left = dbg!(
             self.origin - dbg!(self.right) * projection_plane_half_width
                 + self.up * projection_plane_half_height
         );
+
+        // For anti-aliasing:
+        let mut rng = rand::rngs::SmallRng::from_rng(rand::thread_rng()).unwrap();
+        let jitter_between = Uniform::from(-0.5..=0.5);
 
         let mut image_data = vec![(0.0, 0.0, 0.0); x_size * y_size];
         for _ in 1..=samples_per_pixel {
@@ -65,7 +76,12 @@ impl<T: Hit> Camera<T> {
                         ray::Ray::new(
                             /*origin=*/
                             top_left + self.right * delta_i * (i as f64)
-                                - self.up * delta_i * (j as f64),
+                                - self.up * delta_i * (j as f64)
+                                // Anti-aliasing:
+                                + self.up
+                                    * jitter_between.sample(&mut rng)
+                                    * projection_plane_pixel_height
+                                + self.right * jitter_between.sample(&mut rng) * projection_plane_pixel_width,
                             /*direction=*/ self.forward,
                         ),
                     );
