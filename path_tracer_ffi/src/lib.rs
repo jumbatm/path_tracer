@@ -1,9 +1,14 @@
 use path_tracer::camera;
 use path_tracer::image;
 use path_tracer::vec3;
+use path_tracer::sphere;
+use path_tracer::colour;
+
+use path_tracer::lambertian;
+
 use std::convert::TryInto;
 
-pub type CCamera = camera::Camera<hit::Sphere>;
+pub type CCamera = camera::Camera<sphere::Sphere>;
 pub type CVec3 = vec3::Vec3<f64>;
 
 use std::os::raw::{c_char, c_double};
@@ -59,10 +64,11 @@ pub unsafe extern "C" fn PT_Vec3_delete(vec: *mut CVec3) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn PT_Scene_from_json(_filename: *const c_char) -> *mut hit::Sphere {
-    Box::into_raw(Box::new(hit::Sphere::new(
+pub unsafe extern "C" fn PT_Scene_from_json(_filename: *const c_char) -> *mut sphere::Sphere {
+    Box::into_raw(Box::new(sphere::Sphere::new(
         vec3::Vec3::new(1.0, 0.0, 0.0),
         0.5,
+        std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(1.0, 0.0, 0.0), 1.0))
     )))
 }
 

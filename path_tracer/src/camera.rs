@@ -3,25 +3,21 @@ use crate::hit::Hit;
 use crate::image;
 use crate::ray;
 use crate::vec3;
+use crate::WorldVec;
 
 use rand::distributions::{Distribution, Uniform};
 use rand::SeedableRng;
 
 pub struct Camera<T: Hit> {
     scene: T,
-    origin: vec3::Vec3<f64>,
-    up: vec3::Vec3<f64>,
-    right: vec3::Vec3<f64>,
-    forward: vec3::Vec3<f64>,
+    origin: WorldVec,
+    up: WorldVec,
+    right: WorldVec,
+    forward: WorldVec,
 }
 
 impl<T: Hit> Camera<T> {
-    pub fn new(
-        scene: T,
-        origin: vec3::Vec3<f64>,
-        up: vec3::Vec3<f64>,
-        forward: vec3::Vec3<f64>,
-    ) -> Camera<T> {
+    pub fn new(scene: T, origin: WorldVec, up: WorldVec, forward: WorldVec) -> Camera<T> {
         Camera {
             scene,
             origin,
@@ -42,7 +38,7 @@ impl<T: Hit> Camera<T> {
         // We define the FOV as the horizonal field of vision.
         // We define the projection plane to be at distance of 1. Therefore:
         let alpha = (fov / 180.0) * std::f64::consts::PI;
-        let projection_plane_half_width = dbg!((dbg!(alpha / 2.0)).tan());
+        let projection_plane_half_width = (alpha / 2.0).tan();
         let projection_plane_pixel_width =
             (2.0 * (projection_plane_half_width as f64)) / (x_size as f64);
 
@@ -55,10 +51,8 @@ impl<T: Hit> Camera<T> {
         let projection_plane_pixel_height =
             (2.0 * (projection_plane_half_height as f64)) / (y_size as f64);
 
-        let top_left = dbg!(
-            self.origin - dbg!(self.right) * projection_plane_half_width
-                + self.up * projection_plane_half_height
-        );
+        let top_left = self.origin - dbg!(self.right) * projection_plane_half_width
+            + self.up * projection_plane_half_height;
 
         // For anti-aliasing:
         let mut rng = rand::rngs::SmallRng::from_rng(rand::thread_rng()).unwrap();
@@ -70,7 +64,7 @@ impl<T: Hit> Camera<T> {
                 for j in 0..y_size {
                     // Have a mutable coloured ray. Start it on the projection plane in the
                     // appropiate place.
-                    let ray = ray::Ray::new(
+                    let mut current_ray = ray::Ray::new(
                         /*origin=*/
                         top_left + self.right * delta_i * (i as f64)
                             - self.up * delta_i * (j as f64)
@@ -90,27 +84,60 @@ impl<T: Hit> Camera<T> {
                         /*direction=*/ self.forward,
                     );
 
-                    // Get a pretty, sky-blue gradient.
-                    let t = (ray.get_origin().normalised().1 + 1.0) * 0.5;
-                    let colour = vec3::Vec3::new(1.0, 1.0, 1.0) * (1.0 - t) + vec3::Vec3::new(0.5, 0.7, 1.0) * t;
-                    let colour = colour::Colour::new(colour.0, colour.1, colour.2);
+                    // Before we do anything, first get a pretty, sky-blue gradient.
+                    let t = (current_ray.get_origin().normalised().1 + 1.0) * 0.5;
+                    let colour = vec3::Vec3::new(1.0, 1.0, 1.0) * (1.0 - t)
+                        + vec3::Vec3::new(0.5, 0.7, 1.0) * t;
+                    let mut colour = colour::Colour::new(colour.0, colour.1, colour.2);
 
-                    let mut current_ray =
-                        ray::ColouredRay::new(colour, ray);
-                    for _ in 0..bounces {
+                    let mut reverse_path = Vec::new();
+
+                    // First, build the path that this will go.
+                    for bounce in 1..=bounces {
                         // Find intersection. Have the Hit bounce it to a new direction and origin.
                         current_ray = match self.scene.hit(&current_ray) {
-                            Some(ray) => ray,
+                            Some(material_hit) => {
+                                let normal = material_hit.intersected_surface_normal;
+                                reverse_path.push(material_hit);
+                                normal
+                            }
                             None => {
                                 break;
                             }
                         }
                     }
+
+                    // Now, do some colouring.
+                    let mut path_iter = reverse_path.iter().rev();
+                    // For node 0, we'll say that the angle of incidence is exactly 90 degrees
+                    // (or, if you prefer, pi radians), indicating no attenuation due to viewing angle.
+                    if let Some(hit) = path_iter.next() {
+                        colour = hit.material.colour(colour, std::f64::consts::PI);
+                    }
+
+                    for (prev, current) in reverse_path.iter().rev().zip(path_iter) {
+                        // We need to calculate the angle of incidence. For node _n_ in the path, the
+                        // direction of the bounced vector will be node _n_'s origin - node _n - 1_'s
+                        // origin, normalised.  Therefore, the angle of incidence is the angle between
+                        // the normal and this vector. We can calculate this by rearranging a . b = |a| |b|
+                        // cos(theta), to theta = arccos((a . b) / (|a| |b|)). With unit vectors, |a| =
+                        // |b| = 1.
+                        let travel_direction = (*prev.intersected_surface_normal.get_origin()
+                            - *current.intersected_surface_normal.get_origin())
+                        .normalised();
+                        let normal_direction = current
+                            .intersected_surface_normal
+                            .get_direction()
+                            .normalised();
+                        let angle_of_incidence = travel_direction.dot(normal_direction).acos();
+                        colour = current.material.colour(colour, angle_of_incidence);
+                    }
+
                     // Add to a total.
                     let pixel = &mut image_data[j * x_size + i];
-                    pixel.0 += current_ray.get_colour().get_red();
-                    pixel.1 += current_ray.get_colour().get_green();
-                    pixel.2 += current_ray.get_colour().get_blue();
+                    pixel.0 += colour.get_red();
+                    pixel.1 += colour.get_green();
+                    pixel.2 += colour.get_blue();
                 }
             }
             // (Potentially blit an update to the screen)

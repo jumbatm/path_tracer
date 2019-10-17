@@ -5,3 +5,8 @@ pub mod image;
 pub mod camera;
 pub mod colour;
 pub mod scene;
+pub mod material;
+pub mod sphere;
+pub mod lambertian;
+
+pub type WorldVec = vec3::Vec3<f64>;
