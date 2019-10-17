@@ -19,9 +19,19 @@ impl Lambertian {
 fn random_unit_vector_in_sphere() -> WorldVec {
     use rand::distributions::{Distribution, Uniform};
     use rand::SeedableRng;
-    let mut rng = rand::rngs::SmallRng::from_rng(rand::thread_rng()).unwrap();
     let between = Uniform::from(0.0..=2.0 * std::f64::consts::PI);
-    from_spherical(1.0, between.sample(&mut rng), between.sample(&mut rng))
+    static mut RNG: Option<rand::rngs::SmallRng> = None;
+    unsafe {
+        if let None = RNG {
+            eprintln!("Initialised RNG");
+            RNG = Some(rand::rngs::SmallRng::from_rng(rand::thread_rng()).unwrap());
+        }
+        from_spherical(
+            1.0,
+            between.sample(RNG.iter_mut().next().unwrap()),
+            between.sample(RNG.iter_mut().next().unwrap()),
+        )
+    }
 }
 
 /// Create a vec3 from spherical coordinates.
@@ -48,7 +58,12 @@ impl material::Material for Lambertian {
         )
     }
 
-    fn colour(&self, start_colour: colour::Colour, _surface_normal: &ray::Ray, _angle_of_incidence: f64) -> colour::Colour {
+    fn colour(
+        &self,
+        start_colour: colour::Colour,
+        _surface_normal: &ray::Ray,
+        _angle_of_incidence: f64,
+    ) -> colour::Colour {
         // Perfectly diffuse. Therefore, we ignore the angle of incidence.
         colour::Colour::new(
             self.colour.get_red() * start_colour.get_red(),
