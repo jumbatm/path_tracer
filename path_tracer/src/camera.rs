@@ -92,9 +92,11 @@ impl<T: Hit> Camera<T> {
                     let t = (current_ray.get_direction().normalised().1 + 1.0) * 0.5;
                     let colour = vec3::Vec3::new(1.0, 1.0, 1.0) * (1.0 - t)
                         + vec3::Vec3::new(0.5, 0.7, 1.0) * t;
-                    let mut colour = colour::Colour::new(colour.0, colour.1, colour.2);
+                    let start_colour = colour::Colour::new(colour.0, colour.1, colour.2);
 
                     let mut reverse_path = Vec::new();
+                    let mut of_interest = false;
+                    let mut colour = start_colour.clone();
 
                     // First, build the path that this will go.
                     for bounce in 1..=bounces {
@@ -109,6 +111,9 @@ impl<T: Hit> Camera<T> {
                                 new_ray
                             }
                             None => {
+                                if bounce > 2 {
+                                    of_interest = true;
+                                }
                                 break;
                             }
                         }
@@ -146,6 +151,11 @@ impl<T: Hit> Camera<T> {
                             &current.intersected_surface_normal,
                             angle_of_incidence,
                         );
+                    }
+
+                    if of_interest {
+                        // Print some stats about this path.
+                        //eprintln!("Path size: {}, Starting colour: {:?}, End colour: {:?}", reverse_path.len(), start_colour, colour);
                     }
 
                     // Add to a total.
