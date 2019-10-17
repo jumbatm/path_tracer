@@ -8,5 +8,6 @@ pub mod scene;
 pub mod material;
 pub mod sphere;
 pub mod lambertian;
+pub mod debugon;
 
 pub type WorldVec = vec3::Vec3<f64>;

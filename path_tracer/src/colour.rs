@@ -9,7 +9,7 @@ macro_rules! max {
     };
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Colour(vec3::Vec3<f64>);
 impl Colour {
     /// Create a new colour. All components will be normalised to sit between in the range [0, 1.0]

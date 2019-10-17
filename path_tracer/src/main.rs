@@ -7,8 +7,8 @@ use path_tracer::lambertian;
 
 fn main() {
     let mut scene = scene::Scene::new();
-    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(0.5, 0.0, 0.0), 0.5, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.0, 0.0), 1.0))));
-    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(-0.5, 0.0, 0.0), 0.5, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.0, 0.0), 1.0))));
+    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(-0.5, 0.0, 0.0), 0.5, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
+    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(0.5, 0.0, -0.75), 0.5, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
     let camera = camera::Camera::new(
         /*scene=*/scene,
         /*origin=*/vec3::Vec3::new(0.0, 0.0, 1.0),
