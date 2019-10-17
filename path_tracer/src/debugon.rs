@@ -1,6 +1,7 @@
 use crate::material;
 use crate::colour;
 use crate::ray;
+use crate::WorldVec;
 
 pub struct Debugon;
 impl Debugon {
@@ -13,7 +14,8 @@ impl material::Material for Debugon {
         *surface_normal
     }
 
-    fn colour(&self, start_colour: colour::Colour, angle_of_incidence: f64) -> colour::Colour {
-        colour::Colour::new(0.5 * start_colour.get_red(), 0.5 * start_colour.get_green(), 0.5 * start_colour.get_blue())
+    fn colour(&self, _start_colour: colour::Colour, surface_normal: &ray::Ray, _angle_of_incidence: f64) -> colour::Colour {
+        let normal_direction = (surface_normal.get_direction().normalised() + WorldVec::new(1.0, 1.0, 1.0)) * 0.5;
+        colour::Colour::new(normal_direction.0, normal_direction.1, normal_direction.2)
     }
 }

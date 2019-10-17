@@ -4,6 +4,7 @@ use path_tracer::scene;
 use path_tracer::sphere;
 use path_tracer::colour;
 use path_tracer::lambertian;
+use path_tracer::debugon;
 
 fn main() {
     let mut scene = scene::Scene::new();

@@ -10,6 +10,6 @@ pub trait Material {
 
     /// Given some ray, colour it in the forward direction based on the angle of incidence. This
     /// gives the material its colour attenuation properties. The angle of incidence is in radians.
-    fn colour(&self, start_colour: colour::Colour, angle_of_incidence: f64) -> colour::Colour;
+    fn colour(&self, start_colour: colour::Colour, surface_normal: &ray::Ray, angle_of_incidence: f64) -> colour::Colour;
 
 }

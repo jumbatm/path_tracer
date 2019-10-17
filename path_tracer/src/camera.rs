@@ -112,7 +112,7 @@ impl<T: Hit> Camera<T> {
                     // For node 0, we'll say that the angle of incidence is exactly 90 degrees
                     // (or, if you prefer, pi radians), indicating no attenuation due to viewing angle.
                     if let Some(hit) = path_iter.next() {
-                        colour = hit.material.colour(colour, std::f64::consts::PI);
+                        colour = hit.material.colour(colour, &hit.intersected_surface_normal, std::f64::consts::PI);
                     }
 
                     for (prev, current) in reverse_path.iter().rev().zip(path_iter) {
@@ -130,7 +130,7 @@ impl<T: Hit> Camera<T> {
                             .get_direction()
                             .normalised();
                         let angle_of_incidence = travel_direction.dot(normal_direction).acos();
-                        colour = current.material.colour(colour, angle_of_incidence);
+                        colour = current.material.colour(colour, &current.intersected_surface_normal, angle_of_incidence);
                     }
 
                     // Add to a total.

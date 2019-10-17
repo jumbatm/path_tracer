@@ -48,7 +48,7 @@ impl material::Material for Lambertian {
         )
     }
 
-    fn colour(&self, start_colour: colour::Colour, _angle_of_incidence: f64) -> colour::Colour {
+    fn colour(&self, start_colour: colour::Colour, _surface_normal: &ray::Ray, _angle_of_incidence: f64) -> colour::Colour {
         // Perfectly diffuse. Therefore, we ignore the angle of incidence.
         colour::Colour::new(
             self.colour.get_red() * start_colour.get_red(),
