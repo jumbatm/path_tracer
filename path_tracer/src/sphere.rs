@@ -11,7 +11,7 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn new(origin: WorldVec, radius: f64, material: std::rc::Rc<lambertian::Lambertian>) -> Sphere {
+    pub fn new(origin: WorldVec, radius: f64, material: std::rc::Rc<dyn material::Material>) -> Sphere {
         Sphere { origin, radius, material }
     }
 }
