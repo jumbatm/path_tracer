@@ -98,8 +98,9 @@ impl<T: Hit> Camera<T> {
                         current_ray = match self.scene.hit(&current_ray) {
                             Some(material_hit) => {
                                 let normal = material_hit.intersected_surface_normal;
+                                let new_ray = material_hit.material.sample_gathering_ray(&current_ray, &normal);
                                 reverse_path.push(material_hit);
-                                normal
+                                new_ray
                             }
                             None => {
                                 break;
