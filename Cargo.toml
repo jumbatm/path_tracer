@@ -1,0 +1,2 @@
+[workspace]
+members = [ "path_tracer", "path_tracer_ffi" ]
