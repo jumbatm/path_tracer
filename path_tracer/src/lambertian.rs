@@ -51,8 +51,7 @@ impl material::Material for Lambertian {
     ) -> ray::Ray {
         ray::Ray::new(
             /*origin=*/
-            *surface_normal.get_origin()
-                + surface_normal.get_direction().normalised() * self.fuzziness as f64 * 2.0,
+            *surface_normal.get_origin(),
             /*direction=*/
             (random_unit_vector_in_sphere() * self.fuzziness.into()).normalised(),
         )
