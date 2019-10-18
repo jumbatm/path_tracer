@@ -54,7 +54,7 @@ impl<T: Hit> Camera<T> {
         let projection_plane_pixel_height =
             (2.0 * (projection_plane_half_height as f64)) / (y_size as f64);
 
-        let top_left = self.origin - dbg!(self.right) * projection_plane_half_width
+        let top_left = self.origin - self.right * projection_plane_half_width
             + self.up * projection_plane_half_height;
 
         // For anti-aliasing:

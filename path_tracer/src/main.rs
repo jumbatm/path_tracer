@@ -6,17 +6,19 @@ use path_tracer::colour;
 use path_tracer::lambertian;
 use path_tracer::debugon;
 
+const TOP_SPHERE_RADIUS: f64 = 1.0;
+
 fn main() {
     let mut scene = scene::Scene::new();
-    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(-0.5, 0.0, 0.0), 0.5, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
-    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(0.5, 0.0, -0.75), 0.5, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
+    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(0.0, 0.0, 0.0), TOP_SPHERE_RADIUS, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
+    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(0.0, -100.0 - TOP_SPHERE_RADIUS, 0.0), 100.0, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
     let camera = camera::Camera::new(
         /*scene=*/scene,
-        /*origin=*/vec3::Vec3::new(0.0, 0.0, 1.0),
+        /*origin=*/vec3::Vec3::new(0.0, 0.0, TOP_SPHERE_RADIUS + 2.0),
         /*up=*/vec3::Vec3::new(0.0, 1.0, 0.0),
         /*forward=*/vec3::Vec3::new(0.0, 0.0, -1.0),
     );
 
-    let im = camera.render(/*x_size=*/800, /*y_size=*/600, /*fov=*/90.0, /*bounces=*/10, /*samples_per_pixel=*/100);
+    let im = camera.render(/*x_size=*/800, /*y_size=*/600, /*fov=*/90.0, /*bounces=*/20, /*samples_per_pixel=*/100);
     println!("{}", im.to_ppm());
 }
