@@ -67,8 +67,8 @@ impl material::Material for Lambertian {
         // Perfectly diffuse. Therefore, we ignore the angle of incidence.
         colour::Colour::new(
             self.colour.get_red() * start_colour.get_red(),
-            self.colour.get_green() * start_colour.get_blue(),
-            self.colour.get_blue() * start_colour.get_green(),
+            self.colour.get_green() * start_colour.get_green(),
+            self.colour.get_blue() * start_colour.get_blue()
         )
     }
 }
