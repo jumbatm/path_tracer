@@ -18,20 +18,12 @@ impl Lambertian {
 /// a unit sphere.
 fn random_unit_vector_in_sphere() -> WorldVec {
     use rand::distributions::{Distribution, Uniform};
-    use rand::SeedableRng;
     let between = Uniform::from(0.0..=2.0 * std::f64::consts::PI);
-    static mut RNG: Option<rand::rngs::SmallRng> = None;
-    unsafe {
-        if let None = RNG {
-            eprintln!("Initialised RNG");
-            RNG = Some(rand::rngs::SmallRng::from_rng(rand::thread_rng()).unwrap());
-        }
-        from_spherical(
-            1.0,
-            between.sample(RNG.iter_mut().next().unwrap()),
-            between.sample(RNG.iter_mut().next().unwrap()),
-        )
-    }
+    from_spherical(
+        1.0,
+        between.sample(&mut rand::thread_rng()),
+        between.sample(&mut rand::thread_rng()),
+    )
 }
 
 /// Create a vec3 from spherical coordinates.
@@ -67,7 +59,7 @@ impl material::Material for Lambertian {
         colour::Colour::new(
             self.colour.get_red() * start_colour.get_red(),
             self.colour.get_green() * start_colour.get_green(),
-            self.colour.get_blue() * start_colour.get_blue()
+            self.colour.get_blue() * start_colour.get_blue(),
         )
     }
 }
