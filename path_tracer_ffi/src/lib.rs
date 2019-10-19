@@ -64,15 +64,6 @@ pub unsafe extern "C" fn PT_Vec3_delete(vec: *mut CVec3) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn PT_Scene_from_json(_filename: *const c_char) -> *mut sphere::Sphere {
-    Box::into_raw(Box::new(sphere::Sphere::new(
-        vec3::Vec3::new(1.0, 0.0, 0.0),
-        0.5,
-        std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(1.0, 0.0, 0.0), 1.0))
-    )))
-}
-
-#[no_mangle]
 pub unsafe extern "C" fn PT_Camera_new(
     scene: *mut sphere::Sphere,
     origin: *mut CVec3,

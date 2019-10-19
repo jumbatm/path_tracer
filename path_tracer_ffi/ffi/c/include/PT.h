@@ -20,9 +20,6 @@ struct Pixel {
 struct Vec3 *PT_Vec3_new(double x, double y, double z);
 void PT_Vec3_delete(struct Vec3 *vec);
 
-/// Create a Scene from a JSON scene specifier.
-struct Scene *PT_Scene_from_json(const char *filename);
-
 /// Create a camera for some scene. This function will take ownership of the
 /// scene.
 struct Camera *PT_Camera_new(struct Scene *scene, struct Vec3 *origin, struct Vec3 *up, struct Vec3 *forward, uint64_t x_size, uint64_t y_size);
