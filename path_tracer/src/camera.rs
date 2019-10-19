@@ -18,12 +18,15 @@ pub struct Camera<T: Hit> {
 
 impl<T: Hit> Camera<T> {
     pub fn new(scene: T, origin: WorldVec, up: WorldVec, forward: WorldVec) -> Camera<T> {
+        let right = up.normalised().cross(forward.normalised()).normalised();
+        // Now, re-generate the forward vector so that it's definitely pointing forward.
+        let forward = right.cross(up).normalised();
         Camera {
             scene,
             origin,
             up: up.normalised(),
-            forward: forward.normalised(),
-            right: up.normalised().cross(forward.normalised()).normalised(),
+            forward,
+            right,
         }
     }
 
