@@ -67,28 +67,29 @@ impl<T: Hit> Camera<T> {
                 for j in 0..y_size {
                     // Have a mutable coloured ray. Start it on the projection plane in the
                     // appropiate place.
-                    let mut current_ray = ray::Ray::new(
-                        /*origin=*/
-                        top_left + self.right * delta_i * (i as f64)
-                            - self.up * delta_i * (j as f64)
-                            + self.up // Antialiasing.
+                    let projection_plane_point = top_left + self.right * delta_i * (i as f64)
+                        - self.up * delta_i * (j as f64)
+                        + self.up // Antialiasing.
                                     * if samples_per_pixel > 0 {
                                         jitter_between.sample(&mut rng)
                                             * projection_plane_pixel_height
                                     } else {
                                         0.0
                                     }
-                            + self.right
-                                * if samples_per_pixel > 0 {
-                                    jitter_between.sample(&mut rng) * projection_plane_pixel_width
-                                } else {
-                                    0.0
-                                },
-                        /*direction=*/ self.forward,
+                        + self.right
+                            * if samples_per_pixel > 0 {
+                                jitter_between.sample(&mut rng) * projection_plane_pixel_width
+                            } else {
+                                0.0
+                            }
+                        + self.forward.normalised();
+                    let mut current_ray = ray::Ray::new(
+                        /*origin=*/ self.origin,
+                        /*direction=*/ (projection_plane_point - self.origin).normalised()
                     );
 
                     // Before we do anything, first get a pretty, sky-blue gradient.
-                    let t = (current_ray.get_origin().normalised().1 + 1.0) * 0.5;
+                    let t = (current_ray.get_direction().normalised().1 + 1.0) * 0.5;
                     let colour = vec3::Vec3::new(1.0, 1.0, 1.0) * (1.0 - t)
                         + vec3::Vec3::new(0.5, 0.7, 1.0) * t;
                     let mut colour = colour::Colour::new(colour.0, colour.1, colour.2);
@@ -101,7 +102,9 @@ impl<T: Hit> Camera<T> {
                         current_ray = match self.scene.hit(&current_ray) {
                             Some(material_hit) => {
                                 let normal = material_hit.intersected_surface_normal;
-                                let new_ray = material_hit.material.sample_gathering_ray(&current_ray, &normal);
+                                let new_ray = material_hit
+                                    .material
+                                    .sample_gathering_ray(&current_ray, &normal);
                                 reverse_path.push(material_hit);
                                 new_ray
                             }
@@ -116,7 +119,11 @@ impl<T: Hit> Camera<T> {
                     // For node 0, we'll say that the angle of incidence is exactly 90 degrees
                     // (or, if you prefer, pi radians), indicating no attenuation due to viewing angle.
                     if let Some(hit) = path_iter.next() {
-                        colour = hit.material.colour(colour, &hit.intersected_surface_normal, std::f64::consts::PI);
+                        colour = hit.material.colour(
+                            colour,
+                            &hit.intersected_surface_normal,
+                            std::f64::consts::PI,
+                        );
                     }
 
                     for (prev, current) in reverse_path.iter().rev().zip(path_iter) {
@@ -134,7 +141,11 @@ impl<T: Hit> Camera<T> {
                             .get_direction()
                             .normalised();
                         let angle_of_incidence = travel_direction.dot(normal_direction).acos();
-                        colour = current.material.colour(colour, &current.intersected_surface_normal, angle_of_incidence);
+                        colour = current.material.colour(
+                            colour,
+                            &current.intersected_surface_normal,
+                            angle_of_incidence,
+                        );
                     }
 
                     // Add to a total.
