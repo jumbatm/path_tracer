@@ -3,7 +3,7 @@ use crate::ray;
 use crate::material;
 
 pub struct Scene<'scene> {
-    objects: Vec<Box<dyn hit::Hit + 'scene>>,
+    objects: Vec<std::rc::Rc<dyn hit::Hit + 'scene>>,
 }
 
 impl<'scene> Scene<'scene> {
@@ -13,8 +13,8 @@ impl<'scene> Scene<'scene> {
         }
     }
 
-    pub fn add_object(&mut self, hit: impl hit::Hit + 'scene) {
-        self.objects.push(Box::new(hit));
+    pub fn add_object(&mut self, hit: std::rc::Rc<dyn hit::Hit>) {
+        self.objects.push(hit);
     }
 }
 

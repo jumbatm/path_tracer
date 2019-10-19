@@ -4,14 +4,19 @@ use path_tracer::scene;
 use path_tracer::sphere;
 use path_tracer::colour;
 use path_tracer::lambertian;
-use path_tracer::debugon;
+use path_tracer::hit;
 
 const TOP_SPHERE_RADIUS: f64 = 1.0;
 
 fn main() {
     let mut scene = scene::Scene::new();
-    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(0.0, 0.0, 0.0), TOP_SPHERE_RADIUS, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
-    scene.add_object(sphere::Sphere::new(vec3::Vec3::new(0.0, -100.0 - TOP_SPHERE_RADIUS, 0.0), 100.0, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
+
+    let top_sphere = std::rc::Rc::new(sphere::Sphere::new(vec3::Vec3::new(0.0, 0.0, 0.0), TOP_SPHERE_RADIUS, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
+    let bottom_sphere = std::rc::Rc::new(sphere::Sphere::new(vec3::Vec3::new(0.0, -100.0 - TOP_SPHERE_RADIUS, 0.0), 100.0, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
+
+    scene.add_object(top_sphere.clone());
+    scene.add_object(bottom_sphere.clone());
+
     let camera = camera::Camera::new(
         /*scene=*/scene,
         /*origin=*/vec3::Vec3::new(0.0, 0.0, TOP_SPHERE_RADIUS + 2.0),
