@@ -10,6 +10,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 struct Scene;
+struct SceneBuilder;
 struct Vec3;
 struct Camera;
 struct Image;
@@ -31,10 +32,20 @@ struct Vec3 *PT_Vec3_new(double x, double y, double z);
 void PT_Vec3_delete(struct Vec3 *vec);
 
 /// Create a Scene.
-struct Scene *PT_Scene_new();
+struct SceneBuilder *PT_SceneBuilder_new();
 
 /// Add some object to a scene. The scene will take ownership of the object.
-void PT_Scene_add_object(struct Scene *self, struct Hit *object);
+void PT_SceneBuilder_add_object(struct SceneBuilder *self, struct Hit *object);
+
+/// Convert the SceneBuilder into an immutable Scene. This invalidates the
+/// original SceneBuilder reference -- discard it.
+struct Scene *PT_SceneBuilder_into_scene(struct SceneBuilder *self);
+
+/// Free a Scene. This won't invalidate any objects the scene was using (unless
+/// they were explicitly freed), nor invalidate any cameras using this scene. If
+/// you wish to deallocate a SceneBuilder, / / convert the SceneBuilder into a
+/// Scene first using PT_SceneBuilder_into_scene, / then pass it to this function.
+void *PT_Scene_delete(struct Scene *self);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Materials.

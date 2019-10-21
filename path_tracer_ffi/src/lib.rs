@@ -80,6 +80,13 @@ pub unsafe extern "C" fn PT_SceneBuilder_into_scene(self_: *mut CSceneBuilder) -
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn PT_Scene_delete(self_: *mut CScene) {
+    if !self_.is_null() {
+        Box::from_raw(self_);
+    }
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn PT_Material_Lambertian_new(
     red: c_double,
     green: c_double,
