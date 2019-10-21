@@ -70,7 +70,7 @@ struct Hit *PT_Sphere_delete(struct Sphere *sphere);
 struct Camera *PT_Camera_new(struct Scene *scene, struct Vec3 *origin, struct Vec3 *up, struct Vec3 *forward, uint64_t x_size, uint64_t y_size);
 
 /// Render a portion of an image using some camera. If the arguments specifying
-/// the portion of the image to render are all left at (uint64_t)-1, the entire image is
+/// the portion of the image to render are all left at 0, the entire image is
 /// rendered in one portion.
 struct Image *PT_Camera_render(struct Camera *self, uint64_t topleft_x, uint64_t topleft_y, uint64_t bottomright_x, uint64_t bottomright_y, double fov, uint64_t bounces, uint64_t samples_per_pixel);
 

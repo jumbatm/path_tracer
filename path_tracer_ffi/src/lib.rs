@@ -88,7 +88,7 @@ pub unsafe extern "C" fn PT_Material_Debugon_new() -> *mut CMaterial {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn PT_Sphere_new(x: c_double, y: c_double, z: c_double, radius: c_double, material: *mut CMaterial) -> *mut CSphere {
+pub unsafe extern "C" fn PT_Sphere_new(x: c_double, y: c_double, z: c_double, radius: c_double, material: *mut CMaterial) -> *mut CHit {
     let material_rc = std::rc::Rc::clone(material.as_ref().unwrap());
 
     // Return our new sphere.
