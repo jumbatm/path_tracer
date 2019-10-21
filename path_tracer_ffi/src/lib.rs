@@ -67,12 +67,23 @@ pub unsafe extern "C" fn PT_Scene_new() -> *mut scene::Scene<'static> {
 
 #[no_mangle]
 pub unsafe extern "C" fn PT_Scene_add_object(self_: *mut scene::Scene, object: *mut CHit) {
-    self_.as_mut().unwrap().add_object(object.as_ref().unwrap().clone());
+    self_
+        .as_mut()
+        .unwrap()
+        .add_object(object.as_ref().unwrap().clone());
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn PT_Material_Lambertian_new(red: c_double, green: c_double, blue: c_double, fuzziness: c_float) -> *mut CMaterial {
-    Box::into_raw(Box::new(std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(red, green, blue), fuzziness))))
+pub unsafe extern "C" fn PT_Material_Lambertian_new(
+    red: c_double,
+    green: c_double,
+    blue: c_double,
+    fuzziness: c_float,
+) -> *mut CMaterial {
+    Box::into_raw(Box::new(std::rc::Rc::new(lambertian::Lambertian::new(
+        colour::Colour::new(red, green, blue),
+        fuzziness,
+    ))))
 }
 
 #[no_mangle]
@@ -88,11 +99,21 @@ pub unsafe extern "C" fn PT_Material_Debugon_new() -> *mut CMaterial {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn PT_Sphere_new(x: c_double, y: c_double, z: c_double, radius: c_double, material: *mut CMaterial) -> *mut CHit {
+pub unsafe extern "C" fn PT_Sphere_new(
+    x: c_double,
+    y: c_double,
+    z: c_double,
+    radius: c_double,
+    material: *mut CMaterial,
+) -> *mut CHit {
     let material_rc = std::rc::Rc::clone(material.as_ref().unwrap());
 
     // Return our new sphere.
-    Box::into_raw(Box::new(std::rc::Rc::new(sphere::Sphere::new(WorldVec::new(x, y, z), radius, material_rc))))
+    Box::into_raw(Box::new(std::rc::Rc::new(sphere::Sphere::new(
+        WorldVec::new(x, y, z),
+        radius,
+        material_rc,
+    ))))
 }
 #[no_mangle]
 pub unsafe extern "C" fn PT_Sphere_delete(sphere: *mut CSphere) {
@@ -107,8 +128,6 @@ pub unsafe extern "C" fn PT_Camera_new(
     origin: *mut CVec3,
     up: *mut CVec3,
     forward: *mut CVec3,
-    _x_size: u64,
-    _y_size: u64,
 ) -> *mut CCamera {
     Box::into_raw(Box::new(camera::Camera::new(
         *Box::from_raw(scene),
@@ -121,21 +140,47 @@ pub unsafe extern "C" fn PT_Camera_new(
 #[no_mangle]
 pub unsafe extern "C" fn PT_Camera_render(
     self_: *mut CCamera,
-    _topleft_x: u64,
-    _topleft_y: u64,
-    _bottomright_x: u64,
-    _bottomright_y: u64,
+    top_left_x: u64,
+    top_left_y: u64,
+    bottom_right_x: u64,
+    bottom_right_y: u64,
+    x_size: u64,
+    y_size: u64,
     fov: f64,
     bounces: u64,
     samples_per_pixel: u64,
 ) -> *mut CImage {
-    Box::into_raw(Box::new(CImage::new(self_.as_ref().unwrap().render(
-        800,
-        600,
-        fov,
-        bounces.try_into().unwrap(),
-        samples_per_pixel.try_into().unwrap(),
-    ))))
+    Box::into_raw(Box::new(CImage::new(
+        if top_left_x == 0 && top_left_y == 0 && bottom_right_x == 0 && bottom_right_y == 0 {
+            self_.as_ref().unwrap().render(
+                x_size.try_into().unwrap(),
+                y_size.try_into().unwrap(),
+                fov,
+                bounces.try_into().unwrap(),
+                samples_per_pixel.try_into().unwrap(),
+            )
+        } else {
+            self_
+                .as_ref()
+                .unwrap()
+                .render_region(
+                    (
+                        top_left_x.try_into().unwrap(),
+                        top_left_y.try_into().unwrap(),
+                    ),
+                    (
+                        bottom_right_x.try_into().unwrap(),
+                        bottom_right_y.try_into().unwrap(),
+                    ),
+                    x_size.try_into().unwrap(),
+                    y_size.try_into().unwrap(),
+                    fov,
+                    bounces.try_into().unwrap(),
+                    samples_per_pixel.try_into().unwrap(),
+                )
+                .unwrap()
+        },
+    )))
 }
 
 #[no_mangle]
