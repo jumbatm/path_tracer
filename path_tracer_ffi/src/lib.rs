@@ -5,7 +5,6 @@ use std::convert::TryInto;
 pub type CCamera = camera::Camera<scene::Scene<'static>>;
 pub type CVec3 = vec3::Vec3<f64>;
 pub type CMaterial = std::rc::Rc<dyn material::Material>;
-pub type CSphere = std::rc::Rc<sphere::Sphere>;
 pub type CHit = std::rc::Rc<dyn hit::Hit + 'static>;
 
 use std::os::raw::{c_double, c_float};
@@ -116,9 +115,9 @@ pub unsafe extern "C" fn PT_Sphere_new(
     ))))
 }
 #[no_mangle]
-pub unsafe extern "C" fn PT_Sphere_delete(sphere: *mut CSphere) {
-    if !sphere.is_null() {
-        Box::from_raw(sphere);
+pub unsafe extern "C" fn PT_Hit_delete(hit: *mut CHit) {
+    if !hit.is_null() {
+        Box::from_raw(hit);
     }
 }
 

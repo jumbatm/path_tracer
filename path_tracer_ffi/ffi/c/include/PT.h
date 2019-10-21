@@ -55,11 +55,13 @@ struct Material *PT_Material_Debugon_new();
 // Shapes.
 ////////////////////////////////////////////////////////////////////////////////
 
+/// Destroy a Hittable object.
+struct Hit *PT_Hit_delete(struct Hit *hit);
+
 /// Create a Sphere with a given material.
 struct Hit *PT_Sphere_new(double x, double y, double z, double radius, struct Material *material);
 /// Destroy a sphere handle. This will not invalidate any scenes using this
 /// sphere -- only adding this sphere to anymore scenes.
-struct Hit *PT_Sphere_delete(struct Sphere *sphere);
 
 ////////////////////////////////////////////////////////////////////////////////
 // Camera.
