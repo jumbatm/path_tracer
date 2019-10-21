@@ -3,6 +3,8 @@ use path_tracer::*;
 use std::convert::TryInto;
 
 pub type CCamera = camera::Camera<scene::Scene<'static>>;
+pub type CSceneBuilder = scene::Scene<'static>;
+pub type CScene = std::rc::Rc<CSceneBuilder>;
 pub type CVec3 = vec3::Vec3<f64>;
 pub type CMaterial = std::rc::Rc<dyn material::Material>;
 pub type CHit = std::rc::Rc<dyn hit::Hit + 'static>;
@@ -60,16 +62,21 @@ pub unsafe extern "C" fn PT_Vec3_delete(vec: *mut CVec3) {
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn PT_Scene_new() -> *mut scene::Scene<'static> {
+pub unsafe extern "C" fn PT_SceneBuilder_new() -> *mut CSceneBuilder {
     Box::into_raw(Box::new(scene::Scene::new()))
 }
 
 #[no_mangle]
-pub unsafe extern "C" fn PT_Scene_add_object(self_: *mut scene::Scene, object: *mut CHit) {
+pub unsafe extern "C" fn PT_SceneBuilder_add_object(self_: *mut CSceneBuilder, object: *mut CHit) {
     self_
         .as_mut()
         .unwrap()
         .add_object(object.as_ref().unwrap().clone());
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn PT_SceneBuilder_into_scene(self_: *mut CSceneBuilder) -> *mut CScene {
+    Box::into_raw(Box::new(CScene::new(*Box::from_raw(self_))))
 }
 
 #[no_mangle]
@@ -123,13 +130,13 @@ pub unsafe extern "C" fn PT_Hit_delete(hit: *mut CHit) {
 
 #[no_mangle]
 pub unsafe extern "C" fn PT_Camera_new(
-    scene: *mut scene::Scene<'static>,
+    scene: *mut CScene,
     origin: *mut CVec3,
     up: *mut CVec3,
     forward: *mut CVec3,
 ) -> *mut CCamera {
     Box::into_raw(Box::new(camera::Camera::new(
-        *Box::from_raw(scene),
+        scene.as_ref().unwrap().clone(),
         *origin,
         *up,
         *forward,

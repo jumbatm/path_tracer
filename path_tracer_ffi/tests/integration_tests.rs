@@ -4,13 +4,13 @@ mod tests {
     #[test]
     fn can_render_basic() {
         unsafe {
-            let scene = ffi::PT_Scene_new();
+            let scene = ffi::PT_SceneBuilder_new();
             let material = ffi::PT_Material_Debugon_new();
             let sphere = ffi::PT_Sphere_new(0.0, 0.0, 0.0, 1.0, material);
-            ffi::PT_Scene_add_object(scene, sphere);
+            ffi::PT_SceneBuilder_add_object(scene, sphere);
 
             let camera = ffi::PT_Camera_new(
-                scene,
+                ffi::PT_SceneBuilder_into_scene(scene),
                 /*origin=*/ ffi::PT_Vec3_new(0.0, 0.0, -1.0),
                 /*forward=*/ ffi::PT_Vec3_new(0.0, 1.0, 0.0),
                 /*up=*/ ffi::PT_Vec3_new(0.0, 0.0, 1.0),
@@ -24,13 +24,13 @@ mod tests {
     #[test]
     fn can_render_regions() {
         unsafe {
-            let scene = ffi::PT_Scene_new();
+            let scene = ffi::PT_SceneBuilder_new();
             let material = ffi::PT_Material_Debugon_new();
             let sphere = ffi::PT_Sphere_new(0.0, 0.0, 0.0, 1.0, material);
-            ffi::PT_Scene_add_object(scene, sphere);
+            ffi::PT_SceneBuilder_add_object(scene, sphere);
 
             let camera = ffi::PT_Camera_new(
-                scene,
+                ffi::PT_SceneBuilder_into_scene(scene),
                 /*origin=*/ ffi::PT_Vec3_new(0.0, 0.0, -1.0),
                 /*forward=*/ ffi::PT_Vec3_new(0.0, 1.0, 0.0),
                 /*up=*/ ffi::PT_Vec3_new(0.0, 0.0, 1.0),

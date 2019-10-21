@@ -15,10 +15,10 @@ fn main() {
     let bottom_sphere = std::rc::Rc::new(sphere::Sphere::new(vec3::Vec3::new(0.0, -100.0 - TOP_SPHERE_RADIUS, 0.0), 100.0, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0))));
 
     scene.add_object(top_sphere.clone());
-    scene.add_object(bottom_sphere.clone());
+    scene.add_object(bottom_sphere.clone()); 
 
     let camera = camera::Camera::new(
-        /*scene=*/scene,
+        /*scene=*/std::rc::Rc::new(scene),
         /*origin=*/vec3::Vec3::new(0.0, 0.0, TOP_SPHERE_RADIUS + 2.0),
         /*up=*/vec3::Vec3::new(0.0, 1.0, 0.0),
         /*forward=*/vec3::Vec3::new(0.0, 0.0, -1.0),

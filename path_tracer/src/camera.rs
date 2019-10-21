@@ -9,7 +9,7 @@ use rand::distributions::{Distribution, Uniform};
 use rand::SeedableRng;
 
 pub struct Camera<T: Hit> {
-    scene: T,
+    scene: std::rc::Rc<T>,
     origin: WorldVec,
     up: WorldVec,
     right: WorldVec,
@@ -25,7 +25,7 @@ pub enum RenderError {
 }
 
 impl<T: Hit> Camera<T> {
-    pub fn new(scene: T, origin: WorldVec, up: WorldVec, forward: WorldVec) -> Camera<T> {
+    pub fn new(scene: std::rc::Rc<T>, origin: WorldVec, up: WorldVec, forward: WorldVec) -> Camera<T> {
         let right = up.normalised().cross(forward.normalised()).normalised();
         // Now, re-generate the forward vector so that it's definitely pointing forward.
         let forward = right.cross(up).normalised();
