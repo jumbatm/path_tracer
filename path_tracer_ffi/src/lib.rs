@@ -197,6 +197,13 @@ pub unsafe extern "C" fn PT_Camera_render(
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn PT_Camera_delete(self_: *mut CCamera) {
+    if !self_.is_null() {
+        Box::from_raw(self_);
+    }
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn PT_Image_get_pixel(self_: *mut CImage, i: u64, j: u64) -> Pixel {
     self_.as_ref().unwrap().at(i, j)
 }

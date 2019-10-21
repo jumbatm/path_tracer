@@ -87,6 +87,8 @@ struct Camera *PT_Camera_new(struct Scene *scene, struct Vec3 *origin, struct Ve
 /// rendered in one portion.
 struct Image *PT_Camera_render(struct Camera *self, uint64_t top_left_x, uint64_t top_left_y, uint64_t region_x_size, uint64_t region_y_size, uint64_t total_x_size, uint64_t total_y_size, double fov, uint64_t bounces, uint64_t samples_per_pixel);
 
+void PT_Camera_delete(struct Camera *self);
+
 ////////////////////////////////////////////////////////////////////////////////
 // Image.
 ////////////////////////////////////////////////////////////////////////////////
