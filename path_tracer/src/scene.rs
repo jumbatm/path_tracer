@@ -2,6 +2,7 @@ use crate::hit;
 use crate::ray;
 use crate::material;
 
+#[derive(Debug)]
 pub struct Scene<'scene> {
     objects: Vec<std::rc::Rc<dyn hit::Hit + 'scene>>,
 }

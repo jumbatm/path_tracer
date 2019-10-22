@@ -8,6 +8,7 @@ use crate::WorldVec;
 use rand::distributions::{Distribution, Uniform};
 use rand::SeedableRng;
 
+#[derive(Debug)]
 pub struct Camera<T: Hit> {
     scene: std::rc::Rc<T>,
     origin: WorldVec,

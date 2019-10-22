@@ -4,6 +4,7 @@ use crate::material;
 use crate::lambertian;
 use crate::WorldVec;
 
+#[derive(Debug)]
 pub struct Sphere {
     origin: WorldVec,
     radius: f64,

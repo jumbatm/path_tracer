@@ -2,7 +2,7 @@ use crate::colour;
 use crate::ray;
 use crate::WorldVec;
 
-pub trait Material {
+pub trait Material: std::fmt::Debug {
     /// Given some reflected ray, trace it in the backward direction. This should provide the BDRF
     /// for the material. Returns the new direction vector of the traced ray -- the origin of the
     /// ray is the origin of the surface_normal.

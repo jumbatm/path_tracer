@@ -3,6 +3,7 @@ use crate::colour;
 use crate::ray;
 use crate::WorldVec;
 
+#[derive(Debug)]
 pub struct Debugon;
 impl Debugon {
     pub fn new() -> Debugon {

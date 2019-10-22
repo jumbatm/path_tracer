@@ -80,6 +80,11 @@ pub unsafe extern "C" fn PT_SceneBuilder_into_scene(self_: *mut CSceneBuilder) -
 }
 
 #[no_mangle]
+pub unsafe extern "C" fn PT_Scene_dump(self_: *mut CScene) {
+    eprintln!("{:?}", self_.as_ref().unwrap());
+}
+
+#[no_mangle]
 pub unsafe extern "C" fn PT_Scene_delete(self_: *mut CScene) {
     if !self_.is_null() {
         Box::from_raw(self_);
@@ -194,6 +199,11 @@ pub unsafe extern "C" fn PT_Camera_render(
                 .unwrap()
         },
     )))
+}
+
+#[no_mangle]
+pub unsafe extern "C" fn PT_Camera_dump(self_: *mut CCamera) {
+    dbg!(self_.as_ref().unwrap());
 }
 
 #[no_mangle]

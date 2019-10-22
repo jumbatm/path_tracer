@@ -12,7 +12,7 @@ pub struct MaterialHit {
 /// Defines a type which can be hit with a ray. The returned ray is colour-attenuated and reflected
 /// in the right direction.
 ///
-pub trait Hit {
+pub trait Hit: std::fmt::Debug {
     /// Given some ray `from`, return a MaterialHit representing the material and surface normal. Note
     /// that this is "from" in the reverse direction.
     fn hit(&self, from: &ray::Ray) -> Option<MaterialHit>;

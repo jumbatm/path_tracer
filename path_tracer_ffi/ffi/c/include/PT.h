@@ -41,6 +41,11 @@ void PT_SceneBuilder_add_object(struct SceneBuilder *self, struct Hit *object);
 /// original SceneBuilder reference -- discard it.
 struct Scene *PT_SceneBuilder_into_scene(struct SceneBuilder *self);
 
+/// Dump the contents of a scene to stderr. Useful for debugging.
+/// TODO: May make more sense for this to return a string, and let the client
+/// language perform any kind of printing it needs.
+void PT_Scene_dump(struct Scene *self);
+
 /// Free a Scene. This won't invalidate any objects the scene was using (unless
 /// they were explicitly freed), nor invalidate any cameras using this scene. If
 /// you wish to deallocate a SceneBuilder, / / convert the SceneBuilder into a
@@ -81,6 +86,10 @@ struct Hit *PT_Sphere_new(double x, double y, double z, double radius, struct Ma
 /// Create a camera for some scene. This function will take ownership of the
 /// scene.
 struct Camera *PT_Camera_new(struct Scene *scene, struct Vec3 *origin, struct Vec3 *up, struct Vec3 *forward);
+
+/// Dump a Camera's information and the scene information contained within to
+/// stderr. Useful for debugging.
+void PT_Camera_dump(struct Camera *camera);
 
 /// Render a portion of an image using some camera. If the arguments specifying
 /// the portion of the image to render are all left at 0, the entire image is

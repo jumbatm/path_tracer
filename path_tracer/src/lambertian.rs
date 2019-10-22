@@ -4,6 +4,7 @@ use crate::ray;
 use crate::vec3;
 use crate::WorldVec;
 
+#[derive(Debug)]
 pub struct Lambertian {
     fuzziness: f32,
     colour: colour::Colour,
