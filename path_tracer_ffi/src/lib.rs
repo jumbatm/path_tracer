@@ -12,11 +12,11 @@ pub type CHit = std::rc::Rc<dyn hit::Hit + 'static>;
 use std::os::raw::{c_double, c_float};
 
 #[repr(C)]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 pub struct Pixel {
-    red: u8,
-    green: u8,
-    blue: u8,
+    pub red: u8,
+    pub green: u8,
+    pub blue: u8,
 }
 
 pub struct CImage(pub image::Image);

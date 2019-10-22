@@ -11,7 +11,7 @@ mod tests {
 
             let camera = ffi::PT_Camera_new(
                 ffi::PT_SceneBuilder_into_scene(scene),
-                /*origin=*/ ffi::PT_Vec3_new(0.0, 0.0, -1.0),
+                /*origin=*/ ffi::PT_Vec3_new(0.0, 0.0, -2.0),
                 /*forward=*/ ffi::PT_Vec3_new(0.0, 1.0, 0.0),
                 /*up=*/ ffi::PT_Vec3_new(0.0, 0.0, 1.0),
             );
@@ -19,6 +19,9 @@ mod tests {
 
             assert_eq!(ffi::PT_Image_get_width(image), 200);
             assert_eq!(ffi::PT_Image_get_height(image), 100);
+
+            let pixel = ffi::PT_Image_get_pixel(image, 50, 50);
+            assert_ne!(pixel.red as usize + pixel.green as usize + pixel.blue as usize, 0); 
         }
     }
     #[test]
