@@ -96,11 +96,9 @@ pub unsafe extern "C" fn PT_Material_Lambertian_new(
     red: c_double,
     green: c_double,
     blue: c_double,
-    fuzziness: c_float,
 ) -> *mut CMaterial {
     Box::into_raw(Box::new(std::rc::Rc::new(lambertian::Lambertian::new(
         colour::Colour::new(red, green, blue),
-        fuzziness,
     ))))
 }
 

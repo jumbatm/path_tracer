@@ -6,13 +6,12 @@ use crate::WorldVec;
 
 #[derive(Debug)]
 pub struct Lambertian {
-    fuzziness: f32,
-    colour: colour::Colour,
+    colour: colour::Colour
 }
 
 impl Lambertian {
-    pub fn new(colour: colour::Colour, fuzziness: f32) -> Lambertian {
-        Lambertian { fuzziness, colour }
+    pub fn new(colour: colour::Colour) -> Lambertian {
+        Lambertian { colour }
     }
 }
 /// Produces a ray starting at some origin, pointing to some uniformly-distributed vector along
@@ -47,7 +46,7 @@ impl material::Material for Lambertian {
             /*origin=*/
             *surface_normal.get_origin(),
             /*direction=*/
-            (random_unit_vector_in_sphere() * self.fuzziness.into()).normalised(),
+            random_unit_vector_in_sphere().normalised(),
         )
     }
 

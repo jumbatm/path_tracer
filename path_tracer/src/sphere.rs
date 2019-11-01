@@ -65,7 +65,7 @@ mod tests {
     #[test]
     fn test_hit_sphere() {
         // Have a sphere sat on the x axis, 5 units away.
-        let unit_sphere = Sphere::new(vec3::Vec3::new(5.0, 0.0, 0.0), 1.0, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.9, 0.0, 0.0), 1.0)));
+        let unit_sphere = Sphere::new(vec3::Vec3::new(5.0, 0.0, 0.0), 1.0, std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.9, 0.0, 0.0))));
 
         // Cast a ray along the x axis. This should hit the center of the sphere.
         let ray = ray::Ray::new(

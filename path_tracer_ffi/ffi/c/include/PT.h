@@ -61,7 +61,7 @@ void *PT_Scene_delete(struct Scene *self);
 void PT_Material_delete(struct Material *handle);
 
 /// Create a Lambertian material.
-struct Material *PT_Material_Lambertian_new(double red, double green, double blue, float fuzziness);
+struct Material *PT_Material_Lambertian_new(double red, double green, double blue);
 
 /// Create Debugon, a magical material which has no attenution and is coloured
 /// by its surface normal.
