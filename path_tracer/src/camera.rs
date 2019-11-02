@@ -26,7 +26,12 @@ pub enum RenderError {
 }
 
 impl<T: Hit> Camera<T> {
-    pub fn new(scene: std::rc::Rc<T>, origin: WorldVec, up: WorldVec, forward: WorldVec) -> Camera<T> {
+    pub fn new(
+        scene: std::rc::Rc<T>,
+        origin: WorldVec,
+        up: WorldVec,
+        forward: WorldVec,
+    ) -> Camera<T> {
         let right = up.normalised().cross(forward.normalised()).normalised();
         // Now, re-generate the forward vector so that it's definitely pointing forward.
         let forward = right.cross(up).normalised();
@@ -37,6 +42,17 @@ impl<T: Hit> Camera<T> {
             forward,
             right,
         }
+    }
+
+    pub fn new_looking_at(
+        scene: std::rc::Rc<T>,
+        origin: WorldVec,
+        up: WorldVec,
+        looking_at: WorldVec,
+    ) -> Camera<T> {
+        // First, figure out what the forward vector would be.
+        let forward = (looking_at - origin).normalised();
+        Camera::new(scene, origin, up, forward)
     }
 
     pub fn render(
@@ -56,7 +72,7 @@ impl<T: Hit> Camera<T> {
             bounces,
             samples_per_pixel,
         )
-        .unwrap()
+            .unwrap()
     }
 
     pub fn render_region(
@@ -75,13 +91,13 @@ impl<T: Hit> Camera<T> {
         {
             return Err(RenderError::InvalidRegion {
                 region: (
-                    region_top_left,
-                    (
-                        region_top_left.0 + region_size.0,
-                        region_top_left.1 + region_size.1,
-                    ),
-                ),
-                size: (x_size, y_size),
+                            region_top_left,
+                            (
+                                region_top_left.0 + region_size.0,
+                                region_top_left.1 + region_size.1,
+                            ),
+                        ),
+                        size: (x_size, y_size),
             });
         }
         // We define the FOV as the horizonal field of vision.
@@ -118,19 +134,19 @@ impl<T: Hit> Camera<T> {
                     let projection_plane_point = top_left + self.right * delta_i * (i as f64)
                         - self.up * delta_i * (j as f64)
                         + self.up // Antialiasing.
-                                    * if samples_per_pixel > 0 {
-                                        jitter_between.sample(&mut rng)
-                                            * projection_plane_pixel_height
-                                    } else {
-                                        0.0
-                                    }
-                        + self.right
-                            * if samples_per_pixel > 0 {
-                                jitter_between.sample(&mut rng) * projection_plane_pixel_width
-                            } else {
-                                0.0
-                            }
-                        + self.forward.normalised();
+                        * if samples_per_pixel > 0 {
+                            jitter_between.sample(&mut rng)
+                                * projection_plane_pixel_height
+                        } else {
+                            0.0
+                        }
+                    + self.right
+                        * if samples_per_pixel > 0 {
+                            jitter_between.sample(&mut rng) * projection_plane_pixel_width
+                        } else {
+                            0.0
+                        }
+                    + self.forward.normalised();
                     let mut current_ray = ray::Ray::new(
                         /*origin=*/ self.origin,
                         /*direction=*/ (projection_plane_point - self.origin).normalised(),
@@ -188,7 +204,7 @@ impl<T: Hit> Camera<T> {
                         // |b| = 1.
                         let travel_direction = (*prev.intersected_surface_normal.get_origin()
                             - *current.intersected_surface_normal.get_origin())
-                        .normalised();
+                            .normalised();
                         let normal_direction = current
                             .intersected_surface_normal
                             .get_direction()

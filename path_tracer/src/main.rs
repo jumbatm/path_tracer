@@ -24,11 +24,11 @@ fn main() {
     scene.add_object(top_sphere2.clone());
     scene.add_object(bottom_sphere.clone()); 
 
-    let camera = camera::Camera::new(
+    let camera = camera::Camera::new_looking_at(
         /*scene=*/std::rc::Rc::new(scene),
-        /*origin=*/vec3::Vec3::new(0.0, 0.0, TOP_SPHERE_RADIUS + 2.0),
+        /*origin=*/vec3::Vec3::new(2.0, 0.0, TOP_SPHERE_RADIUS + 2.0),
         /*up=*/vec3::Vec3::new(0.0, 1.0, 0.0),
-        /*forward=*/vec3::Vec3::new(0.0, 0.0, -1.0),
+        /*looking_at=*/vec3::Vec3::new(0.0, 0.0, 0.0),
     );
 
     let im = camera.render(/*x_size=*/800, /*y_size=*/600, /*fov=*/60.0, /*bounces=*/10, /*samples_per_pixel=*/100);
