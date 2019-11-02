@@ -26,7 +26,7 @@ fn main() {
 
     let camera = camera::Camera::new_looking_at(
         /*scene=*/std::rc::Rc::new(scene),
-        /*origin=*/vec3::Vec3::new(2.0, 0.0, TOP_SPHERE_RADIUS + 2.0),
+        /*origin=*/vec3::Vec3::new(10.0, 12.0, TOP_SPHERE_RADIUS + 2.0),
         /*up=*/vec3::Vec3::new(0.0, 1.0, 0.0),
         /*looking_at=*/vec3::Vec3::new(0.0, 0.0, 0.0),
     );

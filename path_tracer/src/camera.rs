@@ -52,6 +52,13 @@ impl<T: Hit> Camera<T> {
     ) -> Camera<T> {
         // First, figure out what the forward vector would be.
         let forward = (looking_at - origin).normalised();
+
+        // Now, we figure out a right vector. This is up x forward.
+        let right = up.normalised().cross(forward.normalised());
+
+        // Finally, regenerate up from these pair of vectors.
+        let up = forward.normalised().cross(right.normalised());
+
         Camera::new(scene, origin, up, forward)
     }
 
