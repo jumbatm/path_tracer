@@ -28,13 +28,13 @@ impl material::Material for Metal {
         // surface normal, we can perform |reflected_ray| cos(theta) as just N . reflected_ray.
         ray::Ray::new(
             *surface_normal.get_origin(),
-            *reflected_ray.get_direction()
+            (*reflected_ray.get_direction()
                 - *surface_normal.get_direction()
                     * surface_normal
                         .get_direction()
                         .normalised()
                         .dot(*reflected_ray.get_direction())
-                    * 2.0,
+                    * 2.0).normalised() + material::random_unit_vector_in_sphere() * self.fuzziness as f64,
         )
     }
     fn colour(
@@ -60,7 +60,7 @@ mod tests {
     fn test_reflected_ray() {
         use material::Material;
 
-        let metal = Metal::new(colour::Colour::new(1.0, 1.0, 1.0), 1.0);
+        let metal = Metal::new(colour::Colour::new(1.0, 1.0, 1.0), 0.0);
         // We expect that the angle of incidence == angle of reflectance.
         let normal = ray::Ray::new(
             vec3::Vec3::new(0.0, 0.0, 0.0),
@@ -92,7 +92,7 @@ mod tests {
                 .normalised()
                 .dot(normal.get_direction().normalised());
 
-            assert_eq!(cos_incident_angle, cos_reflected_ray);
+            assert!((cos_incident_angle - cos_reflected_ray).abs() <= 1e-12);
         }
     }
 }

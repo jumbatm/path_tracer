@@ -12,7 +12,7 @@ const TOP_SPHERE_RADIUS: f64 = 1.0;
 fn main() {
     let mut scene = scene::Scene::new();
 
-    let metal = std::rc::Rc::new(metal::Metal::new(colour::Colour::new(0.5, 0.5, 0.5), 1.0));
+    let metal = std::rc::Rc::new(metal::Metal::new(colour::Colour::new(0.5, 0.5, 0.5), 0.25));
     let gray_lambertian = std::rc::Rc::new(lambertian::Lambertian::new(colour::Colour::new(0.5, 0.5, 0.5)));
     let debugon = std::rc::Rc::new(debugon::Debugon::new());
 
