@@ -66,6 +66,7 @@ impl<T: std::ops::Mul<Output = T> + Copy> std::ops::Mul<T> for Vec3<T> {
     }
 }
 
+
 impl<T: std::ops::Add<Output = T>> std::ops::Add for Vec3<T> {
     type Output = Self;
     fn add(self, rhs: Self) -> Self::Output {

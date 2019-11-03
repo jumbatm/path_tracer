@@ -10,5 +10,6 @@ pub mod sphere;
 pub mod lambertian;
 pub mod debugon;
 pub mod metal;
+pub mod dialectic;
 
 pub type WorldVec = vec3::Vec3<f64>;
